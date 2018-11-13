@@ -1,15 +1,23 @@
 package main
 
 import (
-	"goApi/controllers"
+	"goApi/controllers/api"
 
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	e := echo.New()
+	// Set gin to production mode
+	gin.SetMode(gin.DebugMode)
 
-	e.GET("/", api.Get)
+	r := gin.New()
 
-	e.Logger.Fatal(e.Start(":5000"))
+	// set router to use default middlewares
+	r = gin.Default()
+
+	// initialize api controller
+	api.Init(r)
+
+	// start the server
+	r.Run(":5000")
 }
