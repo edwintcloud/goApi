@@ -24,19 +24,9 @@ func Connect(un string, pw string, nDb string) {
 	// AutoMigrate Models
 	DB.AutoMigrate(&user.User{})
 
-	// // test the db
-	// testInsert(d)
 }
 
 // Close closes database connection
 func Close() {
 	DB.Close()
 }
-
-// func testInsert(d *gorm.DB) {
-// 	newUser := user.User{Username: "testing"}
-// 	d.Create(&newUser)
-// 	if nr := d.NewRecord(newUser); !nr {
-// 		fmt.Println("User created!")
-// 	}
-// }
