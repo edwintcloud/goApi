@@ -62,9 +62,16 @@ func (*usersController) deleteUser(c *gin.Context) {
 	user := user.User{}
 
 	if c.ShouldBindQuery(&user) == nil {
-		db.DB.Delete(&user)
-		c.JSON(200, gin.H{
-			"message": fmt.Sprintf("ID %d deleted from database", user.ID),
-		})
+		// Make sure our primary key has a value so we don't wipe the table
+		if user.ID == 0 {
+			c.JSON(400, gin.H{
+				"message": "Invalid query, no items deleted.",
+			})
+		} else {
+			db.DB.Delete(&user)
+			c.JSON(200, gin.H{
+				"message": fmt.Sprintf("ID %d deleted from database", user.ID),
+			})
+		}
 	}
 }
