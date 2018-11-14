@@ -41,19 +41,30 @@ func (*usersController) getUsers(c *gin.Context) {
 func (*usersController) createUser(c *gin.Context) {
 	user := user.User{}
 
-	if c.ShouldBind(&user) == nil {
+	if c.ShouldBind(&user) == nil && user.Username != "" {
 		db.DB.Create(&user)
 		c.JSON(200, user)
+	} else {
+		c.JSON(400, gin.H{
+			"message": "Unable to create user",
+		})
 	}
 }
 
-// UPDATE ONE by query string
+// UPDATE ONE by body or query
 func (*usersController) updateUser(c *gin.Context) {
 	user := user.User{}
 
-	if c.ShouldBindQuery(&user) == nil {
+	if c.ShouldBind(&user) == nil && user.ID != 0 {
 		db.DB.Model(&user).Updates(user)
 		c.JSON(200, user)
+	} else if c.ShouldBindQuery(&user) == nil && user.ID != 0 {
+		db.DB.Model(&user).Updates(user)
+		c.JSON(200, user)
+	} else {
+		c.JSON(400, gin.H{
+			"message": "Unable to update any users",
+		})
 	}
 }
 
@@ -65,7 +76,7 @@ func (*usersController) deleteUser(c *gin.Context) {
 		// Make sure our primary key has a value so we don't wipe the table
 		if user.ID == 0 {
 			c.JSON(400, gin.H{
-				"message": "Invalid query, no items deleted.",
+				"message": "Invalid query, no users deleted.",
 			})
 		} else {
 			db.DB.Delete(&user)
