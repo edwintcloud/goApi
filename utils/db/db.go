@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"goApi/models/user"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -20,10 +19,6 @@ func Connect(un string, pw string, nDb string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// AutoMigrate Models
-	DB.AutoMigrate(&user.User{})
-
 }
 
 // Close closes database connection

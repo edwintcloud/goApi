@@ -11,8 +11,12 @@ import (
 
 type usersController struct{}
 
-// Init initializes our controller and routes
+// Init initializes our controller and routes and runs migrations for controller
 func Init(e *gin.Engine) {
+
+	// run migrations
+	db.DB.AutoMigrate(&user.User{})
+
 	c := usersController{}
 
 	// routes
@@ -41,7 +45,7 @@ func (*usersController) getUsers(c *gin.Context) {
 func (*usersController) createUser(c *gin.Context) {
 	user := user.User{}
 
-	if c.ShouldBind(&user) == nil && user.Username != "" {
+	if c.ShouldBind(&user) == nil && user.Username != "" && len(user.Password) > 3 {
 		db.DB.Create(&user)
 		c.JSON(200, user)
 	} else {
