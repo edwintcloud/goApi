@@ -1,34 +1,42 @@
 package db
 
 import (
-	"context"
 	"fmt"
+	"goApi/models/user"
 	"log"
 
-	"github.com/mongodb/mongo-go-driver/bson/objectid"
-
-	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func Connect() {
-	client, err := mongo.NewClient("mongodb://localhost:27017")
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = client.Connect(context.TODO())
+// D is our db connection object
+var DB *gorm.DB
+var err error
+
+// Connect connects to mysql database and runs migrations
+func Connect(un string, pw string, nDb string) {
+	// Connect to mysql
+	DB, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", un, pw, nDb))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// test connection by inserting a document
-	collection := client.Database("goApi").Collection("test")
-	res, err := collection.InsertOne(context.Background(), map[string]string{"hello": "world"})
-	if err != nil {
-		log.Fatal(err)
-	}
+	// AutoMigrate Models
+	DB.AutoMigrate(&user.User{})
 
-	// output result of inserted document
-	if oid, ok := res.InsertedID.(objectid.ObjectID); ok {
-		fmt.Println("Id inserted: ", oid.Hex())
-	}
+	// // test the db
+	// testInsert(d)
 }
+
+// Close closes database connection
+func Close() {
+	DB.Close()
+}
+
+// func testInsert(d *gorm.DB) {
+// 	newUser := user.User{Username: "testing"}
+// 	d.Create(&newUser)
+// 	if nr := d.NewRecord(newUser); !nr {
+// 		fmt.Println("User created!")
+// 	}
+// }

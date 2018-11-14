@@ -3,6 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "appengine/cloudsql",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "nYJ4C35LkSdSeAnBscc7QlrTAlc=",
 			"path": "github.com/campoy/embedmd",
 			"revision": "c59ce00e02967db5e93d897330142a3ef6145786",
@@ -69,6 +73,12 @@
 			"revisionTime": "2018-11-12T10:58:24Z"
 		},
 		{
+			"checksumSHA1": "ANMYkuezaW7Pl/JJBiEs0KLzTOg=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "369b5d6e5e8e108ed4ae2f2b1607d444b3807dfb",
+			"revisionTime": "2018-11-13T02:38:49Z"
+		},
+		{
 			"checksumSHA1": "H8wo+NR5z+VRl0wqPYpVQfC06ks=",
 			"path": "github.com/go-stack/stack",
 			"revision": "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a",
@@ -115,6 +125,30 @@
 			"path": "github.com/jessevdk/go-assets",
 			"revision": "4f4301a06e153ff90e17793577ab6bf79f8dc5c5",
 			"revisionTime": "2016-09-21T14:41:39Z"
+		},
+		{
+			"checksumSHA1": "BVLcEDQelqXp6x9u4mbrxE7rxKs=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "472c70caa40267cb89fd8facb07fe6454b578626",
+			"revisionTime": "2018-11-03T14:14:39Z"
+		},
+		{
+			"checksumSHA1": "eECxSkwh0WmhLwaxHfkvcLOWS08=",
+			"path": "github.com/jinzhu/gorm/dialects/mysql",
+			"revision": "472c70caa40267cb89fd8facb07fe6454b578626",
+			"revisionTime": "2018-11-03T14:14:39Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
+		},
+		{
+			"checksumSHA1": "I+g5iffd0bNDiI8swxzsHiJxBz0=",
+			"path": "github.com/joho/godotenv",
+			"revision": "c0b86d615e06d6fa5f869364d68f774ba49a86e3",
+			"revisionTime": "2018-09-27T05:32:03Z"
 		},
 		{
 			"checksumSHA1": "2yHsOHB95SPL7kfDi21cDpq6Sxg=",
@@ -493,6 +527,12 @@
 			"path": "golang.org/x/tools/go/internal/gcimporter",
 			"revision": "150d8ac28524ccbf76b28c54cc349359fc77060e",
 			"revisionTime": "2018-11-09T21:12:25Z"
+		},
+		{
+			"checksumSHA1": "LiyXfqOzaeQ8vgYZH3t2hUEdVTw=",
+			"path": "google.golang.org/appengine/cloudsql",
+			"revision": "4a4468ece617fc8205e99368fa2200e9d1fad421",
+			"revisionTime": "2018-10-31T00:20:03Z"
 		},
 		{
 			"checksumSHA1": "MgYFT27I9gfAtSVBpGVqkCYOj3U=",

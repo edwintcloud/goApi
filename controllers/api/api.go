@@ -2,16 +2,17 @@ package api
 
 import "github.com/gin-gonic/gin"
 
-type ApiController struct{}
+type apiController struct{}
 
+// Init initializes our controller and routes
 func Init(e *gin.Engine) {
-	a := ApiController{}
+	c := apiController{}
 
 	// routes
-	e.GET("/", a.getIndex)
+	e.GET("/", c.getIndex)
 }
 
-func (r *ApiController) getIndex(c *gin.Context) {
+func (*apiController) getIndex(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Welcome to my API 🎉!",
 	})
