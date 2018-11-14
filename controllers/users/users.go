@@ -6,6 +6,8 @@ import (
 	"goApi/utils/db"
 	"log"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,6 +28,8 @@ func Init(e *gin.Engine) {
 		routes.POST("", c.createUser)
 		routes.PUT("", c.updateUser)
 		routes.DELETE("", c.deleteUser)
+
+		routes.POST("/login", c.loginUser)
 	}
 
 }
@@ -86,6 +90,29 @@ func (*usersController) deleteUser(c *gin.Context) {
 			db.DB.Delete(&user)
 			c.JSON(200, gin.H{
 				"message": fmt.Sprintf("ID %d deleted from database", user.ID),
+			})
+		}
+	}
+}
+
+// Login user with req body
+func (*usersController) loginUser(c *gin.Context) {
+	user, foundUser := user.User{}, user.User{}
+
+	if c.ShouldBind(&user) == nil {
+		if err := db.DB.Where("Username = ?", user.Username).First(&foundUser).Error; err == nil {
+			if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err == nil {
+				c.JSON(400, gin.H{
+					"message": "You are now logged in!",
+				})
+			} else {
+				c.JSON(400, gin.H{
+					"message": "Password incorrect",
+				})
+			}
+		} else {
+			c.JSON(400, gin.H{
+				"message": "User not found!",
 			})
 		}
 	}
