@@ -102,7 +102,7 @@ func (*usersController) loginUser(c *gin.Context) {
 	if c.ShouldBind(&user) == nil {
 		if err := db.DB.Where("Username = ?", user.Username).First(&foundUser).Error; err == nil {
 			if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err == nil {
-				c.JSON(400, gin.H{
+				c.JSON(200, gin.H{
 					"message": "You are now logged in!",
 				})
 			} else {
