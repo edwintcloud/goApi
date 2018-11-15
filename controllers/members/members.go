@@ -35,11 +35,11 @@ func (*membersController) createMember(c *gin.Context) {
 	collection := mongodb.Client.Collection("Members")
 	member := member.Member{}
 
-	if c.ShouldBind(&member) == nil {
-		res, err := collection.InsertOne(context.Background(), &member)
+	if vErr := member.CheckValid(&member); c.ShouldBind(&member) == nil && vErr == nil {
+		res, err := collection.InsertOne(context.Background(), member.HashPassword(&member))
 		if err != nil {
 			c.JSON(400, gin.H{
-				"message": "Unable to create new member!",
+				"error": "Unable to create new member!",
 			})
 		} else {
 			id := res.InsertedID.(objectid.ObjectID).Hex()
@@ -49,7 +49,7 @@ func (*membersController) createMember(c *gin.Context) {
 		}
 	} else {
 		c.JSON(400, gin.H{
-			"message": "Unable to bind json to member model!",
+			"error": vErr.Error(),
 		})
 	}
 }
