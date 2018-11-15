@@ -45,6 +45,7 @@ func (*membersController) getMembers(c *gin.Context) {
 			}
 		}
 		c.JSON(200, members)
+		return
 	}
 	c.JSON(400, gin.H{
 		"error": "Unable to find members!",
@@ -63,19 +64,16 @@ func (*membersController) createMember(c *gin.Context) {
 				c.JSON(200, gin.H{
 					"message": fmt.Sprintf("New member with id: %s inserted into database!", id),
 				})
-			} else {
-				c.JSON(400, gin.H{
-					"error": "Unable to create new member!",
-				})
+				return
 			}
 		} else {
 			c.JSON(400, gin.H{
 				"error": err.Error(),
 			})
+			return
 		}
-	} else {
-		c.JSON(400, gin.H{
-			"error": "Unable to create member!",
-		})
 	}
+	c.JSON(400, gin.H{
+		"error": "Unable to create member!",
+	})
 }
