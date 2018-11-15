@@ -45,6 +45,19 @@ func (*usersController) getUsers(c *gin.Context) {
 	}
 }
 
+// // READ ONE
+// func (*usersController) getUser(c *gin.Context) {
+// 	user, foundUser := user.User{}, user.User{}
+
+// 	if c.ShouldBindQuery(&user) == nil && user.ID != 0 {
+
+// 	} else {
+// 		c.JSON(200, gin.H{
+// 			"message": "No users found that match specified query terms!",
+// 		})
+// 	}
+// }
+
 // CREATE ONE
 func (*usersController) createUser(c *gin.Context) {
 	user := user.User{}
