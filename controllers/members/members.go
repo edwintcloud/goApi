@@ -6,6 +6,8 @@ import (
 	"goApi/models/member"
 	"goApi/utils/mongodb"
 
+	"github.com/mongodb/mongo-go-driver/mongo"
+
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +15,14 @@ import (
 
 type membersController struct{}
 
+var collection *mongo.Collection
+
 // Init initializes our controllers and routes
 func Init(e *gin.Engine) {
 	c := membersController{}
 
+	// set collection
+	collection = mongodb.Client.Collection("Members")
 	// routes
 	routes := e.Group("/members")
 	{
@@ -25,31 +31,51 @@ func Init(e *gin.Engine) {
 	}
 }
 
+// READ ALL
 func (*membersController) getMembers(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Not implemented",
+	cur, err := collection.Find(context.Background(), nil)
+	defer cur.Close(context.Background())
+	if err == nil {
+		var members []member.Member
+		for cur.Next(context.Background()) {
+			member := member.Member{}
+			err := cur.Decode(&member)
+			if err == nil {
+				members = append(members, member)
+			}
+		}
+		c.JSON(200, members)
+	}
+	c.JSON(400, gin.H{
+		"error": "Unable to find members!",
 	})
 }
 
+// CREATE ONE
 func (*membersController) createMember(c *gin.Context) {
-	collection := mongodb.Client.Collection("Members")
 	member := member.Member{}
 
-	if vErr := member.CheckValid(&member); c.ShouldBind(&member) == nil && vErr == nil {
-		res, err := collection.InsertOne(context.Background(), member.HashPassword(&member))
-		if err != nil {
-			c.JSON(400, gin.H{
-				"error": "Unable to create new member!",
-			})
+	if c.ShouldBind(&member) == nil {
+		if err := member.CheckValid(&member); err == nil {
+			res, err := collection.InsertOne(context.Background(), member.HashPassword(&member))
+			if err == nil {
+				id := res.InsertedID.(objectid.ObjectID).Hex()
+				c.JSON(200, gin.H{
+					"message": fmt.Sprintf("New member with id: %s inserted into database!", id),
+				})
+			} else {
+				c.JSON(400, gin.H{
+					"error": "Unable to create new member!",
+				})
+			}
 		} else {
-			id := res.InsertedID.(objectid.ObjectID).Hex()
-			c.JSON(200, gin.H{
-				"message": fmt.Sprintf("New member with id: %s inserted into database!", id),
+			c.JSON(400, gin.H{
+				"error": err.Error(),
 			})
 		}
 	} else {
 		c.JSON(400, gin.H{
-			"error": vErr.Error(),
+			"error": "Unable to create member!",
 		})
 	}
 }
