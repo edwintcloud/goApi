@@ -43,7 +43,7 @@ func (Member) CheckValid(m *Member) error {
 		return errors.New("Names must be at least 3 characters!")
 	}
 	//Validate Email
-	if match, _ := regexp.MatchString(`/.+@.+\..+/i`, m.Email); !match {
+	if match, _ := regexp.MatchString(`.+@.+\..+`, m.Email); !match {
 		return errors.New("Not a valid email address!")
 	}
 	return nil
