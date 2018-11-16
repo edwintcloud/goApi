@@ -3,14 +3,15 @@ package members
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"goApi/models/member"
 	"goApi/utils/mongodb"
 
-	"github.com/mongodb/mongo-go-driver/mongo"
-
-	"github.com/mongodb/mongo-go-driver/bson/objectid"
-
+	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
 type membersController struct{}
@@ -31,21 +32,43 @@ func Init(e *gin.Engine) {
 	}
 }
 
-// READ ALL
+// READ ALL or READ ALL that match query params
 func (*membersController) getMembers(c *gin.Context) {
 	cur, err := collection.Find(context.Background(), nil)
 	defer cur.Close(context.Background())
 	if err == nil {
 		var members []member.Member
+
+		// build out our members slice
 		for cur.Next(context.Background()) {
 			member := member.Member{}
 			err := cur.Decode(&member)
 			if err == nil {
-				members = append(members, member)
+				q := c.Request.URL.Query()
+				if len(q) > 0 { // If query params specified
+					var isMatch = false
+					var m = structs.Map(&member)
+					for k := range q {
+						if m[k] == strings.Join(q[k], "") {
+							isMatch = true
+						} else {
+							isMatch = false
+							break
+						}
+					}
+					if isMatch {
+						members = append(members, member)
+					}
+				} else {
+					members = append(members, member)
+				}
 			}
 		}
-		c.JSON(200, members)
-		return
+
+		if len(members) > 0 {
+			c.JSON(200, members)
+			return
+		}
 	}
 	c.JSON(400, gin.H{
 		"error": "Unable to find members!",

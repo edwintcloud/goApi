@@ -8,10 +8,11 @@ import (
 
 // Member model
 type Member struct {
-	FirstName string `bson:"firstName" json:"firstName"`
-	LastName  string `bson:"lastName" json:"lastName"`
-	Username  string `bson:"username" json:"username"`
-	Password  string `bson:"password" json:"password"`
+	// structs tag is used to match query params, bson matches mongo
+	FirstName string `bson:"firstName" json:"firstName" structs:"firstName"`
+	LastName  string `bson:"lastName" json:"lastName" structs:"lastName"`
+	Username  string `bson:"username" json:"username" structs:"username"`
+	Password  string `bson:"password" json:"password" structs:"password"`
 }
 
 // HashPassword hashes password before saving to database
