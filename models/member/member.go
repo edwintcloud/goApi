@@ -24,8 +24,8 @@ func (Member) HashPassword(m *Member) *Member {
 	return m
 }
 
-// ComparePassword compares a memberFound password(hash) to a member password(string)
-func (Member) ComparePassword(fm *Member, m *Member) error {
+// ComparePasswords compares a memberFound password(hash) to a member password(string)
+func (Member) ComparePasswords(fm *Member, m *Member) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(fm.Password), []byte(m.Password)); err != nil {
 		return errors.New("Invalid password!")
 	}
