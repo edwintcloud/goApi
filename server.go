@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"goApi/controllers/api"
 	"goApi/controllers/members"
 	"goApi/controllers/users"
@@ -44,6 +45,13 @@ func main() {
 	api.Init(r)
 	users.Init(r)
 	members.Init(r)
+
+	// catch all request to non-existing endpoints
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(400, gin.H{
+			"error": fmt.Sprintf("Bad Request - %s %s is not a valid endpoint!", c.Request.Method, c.Request.RequestURI),
+		})
+	})
 
 	// start the server
 	r.Run(":5000")

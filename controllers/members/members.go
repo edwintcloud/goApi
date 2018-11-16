@@ -24,11 +24,14 @@ func Init(e *gin.Engine) {
 
 	// set collection
 	collection = mongodb.Client.Collection("Members")
+
 	// routes
 	routes := e.Group("/members")
 	{
 		routes.GET("", c.getMembers)
 		routes.POST("", c.createMember)
+		routes.PUT("", c.updateMember)
+		routes.DELETE("", c.deleteMember)
 	}
 }
 
@@ -98,5 +101,19 @@ func (*membersController) createMember(c *gin.Context) {
 	}
 	c.JSON(400, gin.H{
 		"error": "Unable to create member!",
+	})
+}
+
+// UPDATE ONE
+func (*membersController) updateMember(c *gin.Context) {
+	c.JSON(400, gin.H{
+		"error": "Not Implemented!",
+	})
+}
+
+// DELETE ONE
+func (*membersController) deleteMember(c *gin.Context) {
+	c.JSON(400, gin.H{
+		"error": "Not Implemented!",
 	})
 }
