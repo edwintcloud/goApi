@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/mongodb/mongo-go-driver/bson"
+
 	"goApi/models/member"
 	"goApi/utils/mongodb"
 
@@ -104,10 +106,37 @@ func (*membersController) createMember(c *gin.Context) {
 	})
 }
 
-// UPDATE ONE
+// UPDATE ANY MATCHING QUERY PARAMS
 func (*membersController) updateMember(c *gin.Context) {
+	member := member.Member{}
+	if c.ShouldBind(&member) == nil {
+		q := c.Request.URL.Query()
+		if len(q) > 0 { // If query params specified
+			var filter = make(map[string]interface{})
+			for k := range q {
+				filter[k] = strings.Join(q[k], "")
+			}
+			reqBody := structs.Map(&member)
+			for k := range reqBody {
+				if len(reqBody[k].(string)) < 3 {
+					delete(reqBody, k)
+				}
+			}
+			update := bson.M{"$set": reqBody}
+			if res, err := collection.UpdateMany(context.Background(), filter, update); err == nil && res.ModifiedCount != 0 {
+				c.JSON(200, gin.H{
+					"message": fmt.Sprintf("Successfull updated %d members!", res.ModifiedCount),
+				})
+				return
+			}
+		}
+		c.JSON(400, gin.H{
+			"error": "No members updated!",
+		})
+		return
+	}
 	c.JSON(400, gin.H{
-		"error": "Not Implemented!",
+		"error": "Invalid input!",
 	})
 }
 
